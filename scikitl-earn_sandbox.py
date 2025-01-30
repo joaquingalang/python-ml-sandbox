@@ -1,24 +1,28 @@
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-X = np.array([[1, 2], [2, 3], [3, 3], [5, 5], [6, 6], [7, 8]])
-y = np.array([0, 0, 0, 1, 1, 1])
+data = {
+    'Size': [1400, 1600, 1700, 1875, 1100],  # Square feet
+    'Bedrooms': [3, 4, 3, 3, 2],  # Number of bedrooms
+    'Price': [300000, 400000, 350000, 450000, 200000]  # Price in USD
+}
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+bedroom_df = pd.DataFrame(data)
 
-knn = KNeighborsClassifier(n_neighbors=3)
+X = bedroom_df.drop("Price", axis=1).values
+y = bedroom_df["Price"].values
 
-knn.fit(X_train, y_train)
 
-y_pred = knn.predict(X_test)
+reg = LinearRegression()
 
-accuracy = accuracy_score(y_test, y_pred)
+reg.fit(X, y)
 
-print(f"Accuracy: {accuracy:.2f}")
+print(bedroom_df)
 
-new_data = np.array([[4, 4], [8, 9]])
-predictions = knn.predict(new_data)
+y_pred = reg.predict(X)
 
-print(f"Predicions for new data: {predictions}")
+print(f"Predictions: {y_pred}")
